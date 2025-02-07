@@ -8,7 +8,7 @@ public class ScrubleGame {
     private static String playedWord = "";
     private static String alphabetList = "abcdefghijklmnopqrstuvwxyz";
     private static String usedLetters = "";
-    private static boolean updateAlphabets = true;
+    private static final String vowels = "aeiou";
 
     private static String currentPlayer;
     private static int playerNumber = 1;
@@ -69,10 +69,9 @@ public class ScrubleGame {
         if (scanner.next().equalsIgnoreCase("y")) {
             if (!containsUsedLetters(playedWord)) {
                 updateAlphabetList();
-                trimVowels();
                 updatePlayerScore();
             } else {
-                System.out.println("Sorry, the played word contains already used letters.");
+                System.out.println("Sorry, the played word contains already used consonants.");
             }
         } else {
             System.out.println("Word rejected by players.");
@@ -89,29 +88,19 @@ public class ScrubleGame {
         return false;
     }
 
+    // Update only consonants in the alphabet list
     private static void updateAlphabetList() {
         for (char c : playedWord.toCharArray()) {
-            if (alphabetList.contains(String.valueOf(c))) {
-                usedLetters += c;
-                alphabetList = alphabetList.replace(String.valueOf(c), "_");
+            if (!vowels.contains(String.valueOf(c)) && alphabetList.contains(String.valueOf(c))) {
+                usedLetters += c;  // Track used consonants
+                alphabetList = alphabetList.replace(String.valueOf(c), "_");  // Replace consonants with '_'
             }
         }
-    }
-
-    private static void trimVowels() {
-        String vowels = "aeiou";
-        StringBuilder trimmedWord = new StringBuilder();
-        for (char c : playedWord.toCharArray()) {
-            if (!vowels.contains(String.valueOf(c))) {
-                trimmedWord.append(c);
-            }
-        }
-        playedWord = trimmedWord.toString();
     }
 
     private static void updatePlayerScore() {
         if (currentPlayer.equals(playerOne)) {
-            p1Score += playedWord.length();
+            p1Score += playedWord.length();  // Full word length counts for the score
         } else {
             p2Score += playedWord.length();
         }
