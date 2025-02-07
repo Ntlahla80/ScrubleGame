@@ -1,188 +1,125 @@
-
 package scrublegame;
 
 import java.util.Scanner;
 
+public class ScrubleGame {
+    private static String playerOne;
+    private static String playerTwo;
+    private static String playedWord = "";
+    private static String alphabetList = "abcdefghijklmnopqrstuvwxyz";
+    private static String usedLetters = "";
+    private static boolean updateAlphabets = true;
 
-public class ScrubleGame 
-{
-    private static String PlayerOne;
-    private static String PlayerTwo;
-// declaring a variable to hold a played word
-   private static String playedWord="";  
-   //declaring avariable to hold alphabets left
-   private static String alphabetList="abcdefghijklmnopqrstuvwxyz";
-   //declaring a variable that will store used letters
-   private static String usedLetters="";
-   private static boolean StartGame;
-   
-   private static String currentPlyer;
-   
-   private static int playerNumber=1;
-   
-   //declaring a variable to update alphates
-   private static boolean updateAlphabets=true;
-   
-   //variables for player Score
-   private static int p1Score=0;
-   private static int p2Score=0;
-   
-   
-    public static void main(String[] args) 
-    {
-        StartGame = true; 
-        System.out.print("Welcome to my Scruble Game"+
-                          "\n enter (y) to play the Game or any key to exit : ");
-        if (new Scanner(System.in).next().equalsIgnoreCase("y"))
-        {
-        //prompt for player one name 
-         System.out.print("\n Enter player one Name : "); 
-         PlayerOne=new Scanner(System.in).next();
-         
-         //prompt for player two name 
-         System.out.print("\n Enter player two Name : "); 
-         PlayerTwo=new Scanner(System.in).next();
-         
-         //calling a method to start a game 
-         startGame();
-        }
-        else
-        {
-         //exiting the program
-        System.exit(0);
+    private static String currentPlayer;
+    private static int playerNumber = 1;
+    private static int p1Score = 0;
+    private static int p2Score = 0;
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        System.out.print("Welcome to my Scruble Game" +
+                "\nEnter (y) to play the game or any key to exit: ");
+        if (scanner.next().equalsIgnoreCase("y")) {
+            scanner.nextLine(); // Consume newline left-over
+
+            // Prompt for player names
+            System.out.print("\nEnter Player One Name: ");
+            playerOne = scanner.nextLine();
+
+            System.out.print("\nEnter Player Two Name: ");
+            playerTwo = scanner.nextLine();
+
+            // Start the game
+            startGame();
+        } else {
+            System.out.println("Exiting the game. Goodbye!");
+            System.exit(0);
         }
     }
 
-    private static void startGame() 
-    {
-      while(!playedWord.equals("###"))
-      {
-          //to determine current player
-               currentPlayer();
-               
-       System.out.print("\nRemaining Alphabets : "+updateAlphabets());
-       System.out.print("\n"+currentPlyer+" please enter a word : ");
-       playedWord=new Scanner(System.in).next();
-      
-       //calling a method to validate plyed word
-       validatingPlayedWord();
-     
-      }
-      //calling amethod to display scores
-      playerScore();
-        
-    }
+    private static void startGame() {
+        while (!playedWord.equals("###")) {
+            determineCurrentPlayer();
 
-    private static String updateAlphabets() 
-    {
-        if(updateAlphabets==true)
-        {
-        //for loop to loop through the alphabets list
-        for(int i=0;i<alphabetList.toCharArray().length;i++)
-        {
-       // get used letters
-            if (playedWord.contains((alphabetList.toCharArray()[i]+"")))
-            {
-                 usedLetters+=(alphabetList.toCharArray()[i]+"");
-             alphabetList= alphabetList.replace((alphabetList.toCharArray()[i]+""), "_");
+            System.out.println("\nRemaining Alphabets: " + alphabetList);
+            System.out.print(currentPlayer + ", please enter a word: ");
+            playedWord = scanner.next().toLowerCase();
+
+            if (!playedWord.equals("###")) {
+                validatePlayedWord();
             }
         }
-        
-        }
-        else
-        {
-         System.out.print("\n sorry the played word is invalid or it cointains used words");  
-         updateAlphabets=false;
-        }
-      return alphabetList;
-    }
-    
-// this method determines the current player
-    private static void currentPlayer() 
-    {
-      if (playerNumber==1) 
-      {
-      currentPlyer= PlayerOne;
-      playerNumber+=1;
-      }
-      else
-      {
-      currentPlyer= PlayerTwo;
-      playerNumber-=1;
-      } 
-    }
-//this method removes vowels from plyed word
-    private static void trimVowels()
-    {
-       String vowels="aeiou";
-       for(int i=0;i<playedWord.toCharArray().length;i++)
-    {
-       if(vowels.contains((playedWord.toCharArray()[i]+"")))
-       {
-       playedWord=playedWord.replace((playedWord.toCharArray()[i]+""), " ");
-               
-       }
-       
+
+        displayScores();
     }
 
-    }
-
-    private static void validatingPlayedWord() 
-    {
-      System.out.print("\n enter (y)if the players agree on the played word or any key to disagree :"); 
-      if(new Scanner(System.in).next().equalsIgnoreCase("y"))
-              {
-                   usedLetterSearch();
-//              updateAlphabets=true;
-
-         //calling a method
-        trimVowels();
-       //creating a method to check for played 
-       usedLetterSearch();
-       
-       //calling a method to determine player score
-       determinePlayerScore();
-              }
-              else
-              {
-              playedWord="";
-              }
-    }
-
-    private static void usedLetterSearch() 
-    {
-            //loop to loo through our used letters
-        for(int i=0;i<usedLetters.toCharArray().length;i++)
-        {
-        if(playedWord.contains((usedLetters.toCharArray()[i]+"")))
-        {
-        updateAlphabets=false;
-        }
-        
+    private static void determineCurrentPlayer() {
+        if (playerNumber == 1) {
+            currentPlayer = playerOne;
+            playerNumber = 2;
+        } else {
+            currentPlayer = playerTwo;
+            playerNumber = 1;
         }
     }
 
-    private static void playerScore() 
-    {
-        System.out.print(PlayerOne+"Score"+p1Score+
-                        "\n"+PlayerTwo+"Score"+p2Score);
-    }
-             //determining player score
-    private static void determinePlayerScore() 
-    {
-               // checking the name of the current player
-        if(currentPlyer.equals(PlayerOne)&&!playedWord.equals("###"))
-        {
-        p1Score+=1;
-                
-        
-        }
-         if(currentPlyer.equals(PlayerTwo)&&!playedWord.equals("###"))
-        {
-        p2Score+=1;
-                
-        
+    private static void validatePlayedWord() {
+        System.out.print("\nEnter (y) if both players agree on the played word, or any key to disagree: ");
+        if (scanner.next().equalsIgnoreCase("y")) {
+            if (!containsUsedLetters(playedWord)) {
+                updateAlphabetList();
+                trimVowels();
+                updatePlayerScore();
+            } else {
+                System.out.println("Sorry, the played word contains already used letters.");
+            }
+        } else {
+            System.out.println("Word rejected by players.");
+            playedWord = "";
         }
     }
-    
+
+    private static boolean containsUsedLetters(String word) {
+        for (char c : usedLetters.toCharArray()) {
+            if (word.contains(String.valueOf(c))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void updateAlphabetList() {
+        for (char c : playedWord.toCharArray()) {
+            if (alphabetList.contains(String.valueOf(c))) {
+                usedLetters += c;
+                alphabetList = alphabetList.replace(String.valueOf(c), "_");
+            }
+        }
+    }
+
+    private static void trimVowels() {
+        String vowels = "aeiou";
+        StringBuilder trimmedWord = new StringBuilder();
+        for (char c : playedWord.toCharArray()) {
+            if (!vowels.contains(String.valueOf(c))) {
+                trimmedWord.append(c);
+            }
+        }
+        playedWord = trimmedWord.toString();
+    }
+
+    private static void updatePlayerScore() {
+        if (currentPlayer.equals(playerOne)) {
+            p1Score += playedWord.length();
+        } else {
+            p2Score += playedWord.length();
+        }
+    }
+
+    private static void displayScores() {
+        System.out.println("\nGame Over! Final Scores:");
+        System.out.println(playerOne + " Score: " + p1Score);
+        System.out.println(playerTwo + " Score: " + p2Score);
+    }
 }
